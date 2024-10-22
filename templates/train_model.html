@@ -332,19 +332,155 @@
                             <div class="widget-tabs relative">
                                 <div class="widget-content-tab">
                                     <div class="widget-content-inner upload active">
-                                        
                                         <div class="wrap-upload w-full">
-                                            
                                             <label class="uploadfile">
                                                 <img src="../static/images/box-icon/upload.png" alt="">
                                                 <h5>Upload file</h5>
                                                 <p class="text">Drag or choose your file to upload</p>
                                                 <div class="text filename">CSV.</div>
-                                                <input type="file" class="" name="file">
+                                                <input type="file" id="csvFileInput" accept=".csv" name="file">
                                             </label>
-                                            
                                         </div>
+ 
+                                        <div data-wow-delay="0s" class="wow fadeInUp col-12">
+                                            <div class="product-item offers">
+                                                <h6><i class="icon-description"></i>Dataset</h6>
+                                                <i class="icon-keyboard_arrow_down"></i>
+                                                <div class="content">
+                                                    <div id="tableHeading" class="table-heading">
+                                                        <!-- Dynamic headers will be inserted here -->
+                                                    </div>
+                                                    <div id="tableBody" class="table-body">
+                                                        <!-- Dynamic rows will be inserted here -->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        <div id="pagination-controls" class="">
+                                            
+                                            <div class="swiper-pagination" id="pagination"></div>
+                                            <div class="slider-next swiper-button-next" id="nextButton"></div>
+                                            <div class="slider-prev swiper-button-prev" id="prevButton"></div>
+                                        </div>
+                                        </div>
+                                        
+                                        <script>
+                                            let rowsPerPage = 10; // Number of rows per page
+                                            let currentPage = 1;  // Current page index
+                                            let totalPages = 1;   // Total number of pages
+                                            let csvData = [];     // Store CSV data
+                                        
+                                            document.getElementById('csvFileInput').addEventListener('change', function(event) {
+                                                const file = event.target.files[0];
+                                                if (file && file.type === 'text/csv') {
+                                                    const reader = new FileReader();
+                                                    reader.onload = function(e) {
+                                                        const text = e.target.result;
+                                                        const rows = text.split('\n').filter(row => row.trim() !== ''); // Filter empty rows
+                                                        if (rows.length > 0) {
+                                                            csvData = rows.map(row => row.split(',')); // Convert CSV to array of rows
+                                                            
+                                                            // Populate the task type dropdown with column names
+                                                            const taskTypeSelect = document.getElementById('taskTypeSelect');
+                                                            taskTypeSelect.innerHTML = ''; // Clear existing options
+                                                            taskTypeSelect.innerHTML += '<option value="" disabled selected>Select target Type</option>'; // Default option
+                                                            
+                                                            // Loop through the first row (headers) and create options
+                                                            const headers = csvData[0];
+                                                            headers.forEach((header, index) => {
+                                                                taskTypeSelect.innerHTML += `<option value='${header}'>${header}</option>`;
+                                                            });
+                                        
+                                                            totalPages = Math.ceil((csvData.length - 1) / rowsPerPage); // Calculate total pages
+                                                            displayTable(currentPage); // Display the first page
+                                                        }
+                                                    };
+                                                    reader.readAsText(file);
+                                                } else {
+                                                    alert('Please upload a valid CSV file.');
+                                                }
+                                            });
+                                        
+                                            function displayTable(page) {
+                                                const tableHeading = document.getElementById('tableHeading');
+                                                const tableBody = document.getElementById('tableBody');
+                                        
+                                                // Clear previous content
+                                                tableHeading.innerHTML = '';
+                                                tableBody.innerHTML = '';
+                                        
+                                                // Show headers (first row)
+                                                const headers = csvData[0];
+                                                headers.forEach(header => {
+                                                    const headerColumn = document.createElement('div');
+                                                    headerColumn.className = 'column';
+                                                    headerColumn.innerText = header;
+                                                    tableHeading.appendChild(headerColumn);
+                                                });
+                                        
+                                                // Calculate start and end indices for the current page
+                                                const startIndex = (page - 1) * rowsPerPage + 1;
+                                                const endIndex = Math.min(startIndex + rowsPerPage - 1, csvData.length - 1);
+                                        
+                                                // Add rows for the current page
+                                                for (let i = startIndex; i <= endIndex; i++) {
+                                                    const columns = csvData[i];
+                                                    const tableRow = document.createElement('div');
+                                                    tableRow.className = 'table-item';
+                                                    columns.forEach(column => {
+                                                        const tableColumn = document.createElement('div');
+                                                        tableColumn.className = 'column';
+                                                        tableColumn.innerText = column;
+                                                        tableRow.appendChild(tableColumn);
+                                                    });
+                                                    tableBody.appendChild(tableRow);
+                                                }
+                                        
+                                                // Update pagination info
+                                                updatePagination();
+                                            }
+                                        
+                                            function updatePagination() {
+                                                const paginationDiv = document.getElementById('pagination');
+                                                paginationDiv.innerHTML = `Page ${currentPage} of ${totalPages}`;
+                                        
+                                                const prevButton = document.getElementById('prevButton');
+                                                const nextButton = document.getElementById('nextButton');
+                                        
+                                                // Disable buttons when needed
+                                                prevButton.disabled = (currentPage === 1);
+                                                nextButton.disabled = (currentPage === totalPages);
+                                            }
+                                        
+                                            document.getElementById('prevButton').addEventListener('click', function() {
+                                                if (currentPage > 1) {
+                                                    currentPage--;
+                                                    displayTable(currentPage);
+                                                }
+                                            });
+                                        
+                                            document.getElementById('nextButton').addEventListener('click', function() {
+                                                if (currentPage < totalPages) {
+                                                    currentPage++;
+                                                    displayTable(currentPage);
+                                                }
+                                            });
+                                        </script>
+                                        
+                                        
+                                                                                
                                         <div class="wrap-content w-full">
+                                            
+                                                <fieldset class="message">
+                                                    <label>Target(y) *</label>
+                                                    <div class="">
+                                                        <div class=""> 
+                                                            <select class="form-select" aria-label="Loss Function Selector" name="Target" id="taskTypeSelect">
+                                                                <option value="" disabled selected>Select The target y</option>
+                                                                <!-- Options will be populated here -->
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </fieldset>
                                                 <fieldset class="name">
                                                     <label>Number of layers *</label>
                                                     <input type="number" id="number_layers" placeholder="number of layers" name="number_layers" min="1" aria-required="true" required>
@@ -429,15 +565,25 @@
                                                         </div>
                                                     </div>
                                                 </fieldset>
-                                                <fieldset class="name">
-                                                    <label>Target(y) *</label>
-                                                    <input type="text" id="Target" placeholder="number of layers" name="Target" min="1" aria-required="true" required>
-                                                </fieldset>
 
                                                 <fieldset class="name">
                                                     <label>Epoches  *</label>
                                                     <input type="number" id="epoches" placeholder="nimber of epoches" name="epoches" tabindex="2" value="" aria-required="true" required="">
                                                 </fieldset>
+                                                
+                                                <fieldset class="message">
+                                                    <label>Task type *</label>
+                                                    <div class="">
+                                                        <div class=""> 
+                                                            <select class="form-select" aria-label="Loss Function Selector" name="task_type">
+                                                                <option selected>Select the type of task</option>
+                                                                <option value="regression">Regression</option>
+                                                                <option value="classification">Classification</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </fieldset>
+                                                
                                                 <div class="btn-submit flex gap30 justify-center">
                                                     <button class="tf-button style-1 h50 w320" type="submit">Submit item<i class="icon-arrow-up-right2"></i></button>
                                                 </div>

@@ -2535,3 +2535,23 @@ body.background-white .tf-mouse-inner {
 body.background-white .tf-mouse-outer {
     border-color: rgba(22, 22, 22, 1);
 }
+.table-body {
+    max-height: 300px;
+    overflow-y: scroll;
+    border: 1px solid #ddd;
+}
+
+.column {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+#pagination-controls {
+    margin-top: 20px;
+    text-align: center;
+}
+
+button {
+    padding: 5px 10px;
+    margin: 5px;
+}
