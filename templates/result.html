@@ -33,7 +33,7 @@
 
 <body class="body dashboard1">
  <!-- preload -->
-    <div class="preload preload-container">
+    <!-- <div class="preload preload-container">
         <div class="middle">
             <div class="bar bar1"></div>
             <div class="bar bar2"></div>
@@ -44,7 +44,7 @@
             <div class="bar bar7"></div>
             <div class="bar bar8"></div>
           </div>
-    </div>
+    </div> -->
     <!-- /preload -->
 
     
@@ -62,7 +62,7 @@
                                 <div class="divider"></div>
                                 <div class="title">Cost function</div>
                                 <div class="image">
-                                    <img src="../static/images/plots/model_loss_plot.png" alt="Image">
+                                    <img src="../static/images/plots/model_loss.png" alt="Image">
                                 </div>
                                 <div class="divider"></div>
                                 <div class="title">Cost function</div>
@@ -98,6 +98,122 @@
                     </div>
                 </div>
             </div>
+            
+            <div class="tf-section-2 product-detail">
+                <div class="themesflat-container">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="infor-product style-1">
+                                <div data-wow-delay="0s" class="wow fadeInUp text justify-center">the model <span class="icon-tick"><span class="path1"></span><span class="path2"></span></span></div>
+                                <h2 data-wow-delay="0s" class="wow fadeInUp text-center pb-30 mb-0">visualisation</h2>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="swiper-container carouselfull-2" data-swiper='{
+                                "loop":true,
+                                "slidesPerView": 1,
+                                "observer": true,
+                                "observeParents": true,
+                                "spaceBetween": 20,
+                                "breakpoints": {
+                                    "768": {
+                                        "slidesPerView": 2,
+                                        "spaceBetween": 0
+                                    }
+                                }
+                            }'>
+                                <div class="swiper-wrapper">
+                                    <div class="swiper-slide">
+                                        <div class="tf-card-box style-6">
+                                            <div class="card-media">
+                                                <a href="#">
+                                                    <img src="../static/images/plots/model_loss.png" alt="">
+                                                </a>
+                                            </div>
+                                            <div class="button-place-bid">
+                                                <a href="#" data-toggle="modal" data-target="#popup_loss" class="tf-button"><span>Loss Curve</span></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="swiper-slide">
+                                        <div class="tf-card-box style-6">
+                                            <div class="card-media">
+                                                <a href="#">
+                                                    <img src="../static/images/plots/model_accuracy.png" alt="">
+                                                </a>
+                                            </div>
+                                            <div class="button-place-bid">
+                                                <a href="#" data-toggle="modal" data-target="#popup_model_accuracy" class="tf-button"><span>Place Bid</span></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="swiper-slide">
+                                        <div class="tf-card-box style-6">
+                                            <div class="card-media">
+                                                <a href="#">
+                                                    <img src="../static/images/plots/confusion_matrix.png" alt="">
+                                                </a>
+                                            </div>
+                                            <div class="button-place-bid">
+                                                <a href="#" data-toggle="modal" data-target="#popup_confusion_matrix" class="tf-button"><span>Place Bid</span></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="swiper-slide">
+                                        <div class="tf-card-box style-6">
+                                            <div class="card-media">
+                                                <a href="#">
+                                                    <img src="../static/images/plots/roc_curve.png" alt="">
+                                                </a>
+                                            </div>
+                                            <div class="button-place-bid">
+                                                <a href="#" data-toggle="modal" data-target="#popup_bid" class="tf-button"><span>Place Bid</span></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="swiper-slide">
+                                        <div class="tf-card-box style-6">
+                                            <div class="card-media">
+                                                <a href="#">
+                                                    <img src="../static/images/feature_importance.png" alt="">
+                                                </a>
+                                            </div>
+                                            <div class="button-place-bid">
+                                                <a href="#" data-toggle="modal" data-target="#feature_importance" class="tf-button"><span>Place Bid</span></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="swiper-slide">
+                                        <div class="tf-card-box style-6">
+                                            <div class="card-media">
+                                                <a href="#">
+                                                    <img src="../static/images/plots/lr_vs_loss.png" alt="">
+                                                </a>
+                                            </div>
+                                            <div class="button-place-bid">
+                                                <a href="#" data-toggle="modal" data-target="#popup_lr_vs_loss" class="tf-button"><span>Place Bid</span></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="swiper-slide">
+                                        <div class="tf-card-box style-6">
+                                            <div class="card-media">
+                                                <a href="#">
+                                                    <img src="../static/images/precision_recall_curve.png" alt="">
+                                                </a>
+                                            </div>
+                                            <div class="button-place-bid">
+                                                <a href="#" data-toggle="modal" data-target="#precision_recall_curve" class="tf-button"><span>Place Bid</span></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         
 
             <!-- Footer -->
@@ -183,6 +299,66 @@
                 </div>
             </footer><!-- /#footer -->
 
+            <div class="modal fade popup" id="popup_model_accuracy" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <img src="../static/images/plots/model_accuracy.png" alt="">
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade popup" id="popup_confusion_matrix" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>s
+                        <img src="../static/images/plots/confusion_matrix.png" alt="">
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade popup" id="roc_curve" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>s
+                        <img src="../static/images/plots/roc_curve.png" alt="">
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade popup" id="feature_importance" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>s
+                        <img src="../static/images/plots/feature_importance.png" alt="">
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade popup" id="popup_lr_vs_loss" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>s
+                        <img src="../static/images/plots/lr_vs_loss.png" alt="">
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade popup" id="precision_recall_curve" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>s
+                        <img src="../static/images/plots/precision_recall_curve.png" alt="">
+                    </div>
+                </div>
+            </div>
         </div>
         <!-- /#page -->
     </div>

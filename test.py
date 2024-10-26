@@ -2,6 +2,18 @@ from flask import Flask ,render_template,request
 import os
 from werkzeug.utils import secure_filename
 
+import numpy as np
+from sklearn.metrics import roc_curve, auc
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+
+import tensorflow as tf
+from tensorflow.keras import layers, models
+from sklearn.model_selection import train_test_split
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.metrics import r2_score
+from tensorflow.keras.models import load_model
+
 
 app=Flask(__name__)
 @app.route('/')
@@ -19,14 +31,6 @@ def result():
 
 
 
-import tensorflow as tf
-from tensorflow.keras import layers, models
-from sklearn.model_selection import train_test_split
-import pandas as pd
-import matplotlib.pyplot as plt
-from sklearn.metrics import r2_score
-from tensorflow.keras.models import load_model
-
 
 # Prototype for training function with Pandas DataFrame
 def train_tensor(nbr_layers, nbr_neurals, activation, loss, optimizer, epoches, data, target_column, task_type, alpha=0.001):
@@ -35,6 +39,10 @@ def train_tensor(nbr_layers, nbr_neurals, activation, loss, optimizer, epoches, 
     
     task_type: 'regression' or 'classification' (string)
     """
+
+    #preprocessing the data :
+####################### don t forget ######################
+
     print(target_column)
     X = data.drop(columns=[target_column])
     y = data[target_column]
@@ -68,6 +76,10 @@ def train_tensor(nbr_layers, nbr_neurals, activation, loss, optimizer, epoches, 
     
     history = model.fit(X_train, y_train, epochs=epoches, batch_size=32, validation_split=0.2)
     
+
+
+
+
     plt.figure(figsize=(12, 6))
     plt.subplot(1, 2, 1)
     plt.plot(history.history['loss'], label='Loss')
@@ -78,8 +90,20 @@ def train_tensor(nbr_layers, nbr_neurals, activation, loss, optimizer, epoches, 
     plt.legend()
     plt.grid()
 
+
+# model_performance_plot
+    plt.figure(figsize=(12, 6))
+    plt.plot(history.history['loss'], label='Loss')
+    plt.plot(history.history['val_loss'], label='Validation Loss')
+    plt.title('Model Loss over Epochs')
+    plt.xlabel('Epochs')
+    plt.ylabel('Loss')
+    plt.legend()
+    plt.grid()
+    plt.savefig('static/images/plots/model_loss.png')
+
     if task_type == 'classification' and 'accuracy' in history.history:
-        plt.subplot(1, 2, 2)
+        plt.figure(figsize=(12, 6))
         plt.plot(history.history['accuracy'], label='Accuracy')
         plt.plot(history.history['val_accuracy'], label='Validation Accuracy')
         plt.title('Model Accuracy over Epochs')
@@ -87,9 +111,20 @@ def train_tensor(nbr_layers, nbr_neurals, activation, loss, optimizer, epoches, 
         plt.ylabel('Accuracy')
         plt.legend()
         plt.grid()
+        plt.savefig('static/images/plots/model_accuracy.png')
 
-    plt.savefig('static/images/plots/model_performance_plot.png')
-    
+    # confusion matrix:
+
+    if task_type == 'classification':
+        y_pred_classes = model.predict(X_test)
+        y_pred_classes = np.argmax(y_pred_classes, axis=1)  # For multi-class
+        cm = confusion_matrix(y_test.values.argmax(axis=1), y_pred_classes)
+        disp = ConfusionMatrixDisplay(confusion_matrix=cm)
+        disp.plot()
+        plt.figure(figsize=(12, 6))
+        plt.title('Confusion Matrix')
+        plt.savefig('static/images/plots/confusion_matrix.png')
+
     test_loss = model.evaluate(X_test, y_test)
     
     if task_type == 'regression':
@@ -116,29 +151,34 @@ def train_data():
         activations = []
         number_layers = int(request.form['number_layers'])
 
+        # Collect neurons and activations from the form
         for i in range(number_layers):
             neurons.append(int(request.form.get(f'number_neurons_{i}')))
             activations.append(request.form.get(f'activation_function_{i}'))
 
+        # Get other parameters from the form
         epoches = int(request.form['epoches'])
         loss_function = request.form['loss_function']
         optimizer_function = request.form['optimizer_function']
-        Target = request.form['Target'].replace('"','')
-        print(str(Target))
-        task_type = request.form['task_type']  # Get task type from the form
+        Target = request.form['Target'].replace('"', '')
+        task_type = request.form['task_type']
 
+        # Handle file upload
         file = request.files['file']
         filename = secure_filename(file.filename)
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(file_path)
         data = pd.read_csv(file_path)
-        
+
+        # Train the model
         model, history, test_loss, score = train_tensor(
             number_layers, neurons, activations, loss_function, optimizer_function, epoches, data, Target, task_type
         )
-        
-        return render_template('result.html', summary=model.summary(), score=score, test_loss=test_loss, activations=activations, neurons=neurons, epoches=epoches, loss_function=loss_function, optimizer_function=optimizer_function, Target=Target)
 
+        # Render the result template with model details
+        return render_template('result.html', summary=model.summary(), score=score, test_loss=test_loss,
+                               activations=activations, neurons=neurons, epoches=epoches, 
+                               loss_function=loss_function, optimizer_function=optimizer_function, Target=Target)
 
 if __name__ == '__main__':
     app.run(debug=True,port=4000,use_reloader=False)
