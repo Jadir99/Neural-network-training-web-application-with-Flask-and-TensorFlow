@@ -1696,7 +1696,6 @@ a:focus {
 #footer.bg-white .title-widget {
     color: rgba(22, 22, 22, 1);
 }
-
 #footer.bg-white .widget-social ul li a {
     color: rgba(22, 22, 22, 1);
     background-color: rgba(22, 22, 22, 0.05);
@@ -2554,4 +2553,8 @@ body.background-white .tf-mouse-outer {
 button {
     padding: 5px 10px;
     margin: 5px;
+}
+
+.cardjadir{
+    background-color: fff;
 }
