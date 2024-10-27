@@ -375,15 +375,17 @@ def train_images():
 @app.route('/prediction_image',methods=["POST", "GET"])
 def prediction_image():
     if request.method == "POST":
-
-        # Handle file upload    
+        # Handle file upload
         image = request.files['image']
-        # image = "./static/images/uploads/cat/10.jpg"
 
-        # Define the image path
+        filename = secure_filename(image.filename)
+        temp_path = os.path.join('./static/images/temp/', filename)
+        
+        # Save the uploaded image temporarily
+        image.save(temp_path)
 
-        # Load the image
-        img = cv2.imread(image)
+        # Load the image with OpenCV
+        img = cv2.imread(temp_path)
 
         # Check if the image was loaded correctly
         if img is None:
@@ -401,7 +403,7 @@ def prediction_image():
             predicted_class = np.argmax(prediction)
             print("Predicted class:", predicted_class)
             target=choose_target(predicted_class)
-        return render_template('predict_image.html',predicted_class=predicted_class,image=str(image.filename),proba=max(prediction[0][0],prediction[0][1]),target=target)
+        return render_template('predict.html',predicted_class=predicted_class,image=str(image.filename),proba=max(prediction[0][0],prediction[0][1]),target=target)
 
 if __name__ == '__main__':
     app.run(debug=True,port=4000,use_reloader=False)

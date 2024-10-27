@@ -328,8 +328,56 @@
                 </div>
             </div>
 
-            <form action="{{url_for('train_images')}}" method="post" enctype="multipart/form-data">
+            <form action="{{url_for('prediction_image')}}" method="post" enctype="multipart/form-data">
                 <div class="tf-section tf-grid-blog pb-80">
+                    
+                    {% if target %}
+                    
+                        <style>
+                            .card-media {
+                                width: 400;          /* Set desired height */
+                                display: flex;
+                                justify-content: center;
+                                align-items: center;
+                                overflow: hidden;   /* Ensures no overflow if image is larger */
+                                /* Optional: Background color */
+                                border-radius: 8px; /* Optional: Rounded corners */
+                            }
+                        
+                            .card-media img {
+                                max-width: 100%;
+                                max-height: 100%;
+                                object-fit: cover;  /* Crop image to fill the container if needed */
+                            }
+                            .target{
+                                color:rgb(220, 220, 26);
+                            }
+                        </style>
+                        <div class="tf-section tf-grid-blog pb-80 text-center">
+                            <div class="themesflat-container">
+                                <div class="row">
+                                    <div class="fl-blog fl-item2 col-lg-12 col-md-6">
+                                        <article class="tf-card-article">
+                                            <div class="card-media w-12">
+                                                <a href="blog-detail.html">
+                                                    <img src="../static/images/temp/{{image}}" alt="aaaaa">
+                                                </a>
+                                            </div>
+                                            <div class="meta-info flex">
+                                            </div>
+                                            <div class="card-title">
+                                                <h5>
+                                                    the image is <span class="target">{{target}}</span> with probabilities <span class="target">{{proba }}</span></h5>
+                                            </div>
+                                        </article>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    
+
+                    {% endif %}
+
                     <div class="themesflat-container">
                         <div class="row">
 
@@ -339,18 +387,11 @@
                                     <div id="create" class="tabcontent active">
                                         <div class="wrapper-content-create">
                                             <div class="heading-section">
-                                                <h2 class="tf-title pb-30">put the image to choos between {{target1}} and {{target2}} </h2>
+                                                <h2 class="tf-title pb-30">put the image to choose the target </h2>
                                             </div>
                                             <div class="widget-tabs relative">
                                                 <div class="widget-content-tab">
                                                     <div class="widget-content-inner upload active">
-
-
-                                                        <fieldset class="name">
-                                                            <input type="text" id="target" placeholder="name of label 2"
-                                                                name="target2" tabindex="2" value="" aria-required="true"
-                                                                required="">
-                                                        </fieldset>
                                                         <div class="wrap-upload w-full">
                                                             <label class="uploadfile">
                                                                 <img src="../static/images/box-icon/upload.png" alt="">
@@ -366,140 +407,11 @@
                                                 </div>
                                 </article>
                             </div>
-
-
-                            <div class="content-tabs  tf-card-article p-5 w-full">
-                                <div id="create" class="tabcontent active">
-                                    <div class="wrapper-content-create">
-                                        <div class="widget-tabs relative">
-                                            <div class="widget-content-tab cardjadir">
-                                                <div class="widget-content-inner upload active bg-dark">
-                                                    <div class="wrap-content w-full">
-
-                                                        <fieldset class="name">
-                                                            <label>Number of layers *</label>
-                                                            <input type="number" id="number_layers"
-                                                                placeholder="number of layers" name="number_layers"
-                                                                min="1" aria-required="true" required>
-                                                        </fieldset>
-                                                        <!-- Container to dynamically insert layer fields -->
-                                                        <div id="layers_container"></div>
-                                                        <script>
-                                                            document.getElementById('number_layers').addEventListener('input', function () {
-                                                                const layerCount = parseInt(this.value);
-                                                                const container = document.getElementById('layers_container');
-
-                                                                // Clear the container first
-                                                                container.innerHTML = '';
-
-                                                                if (layerCount > 0) {
-                                                                    for (let i = 0; i < layerCount; i++) {
-                                                                        // Number of neurons field for each layer
-                                                                        const neuronField = document.createElement('fieldset');
-                                                                        neuronField.classList.add('name');
-                                                                        neuronField.innerHTML = `
-                                                                    <label>Number of Neurons for Layer ${i + 1} *</label>
-                                                                    <input type="number" placeholder="Number of neurons" name="number_neurons_${i}" required>
-                                                                `;
-                                                                        container.appendChild(neuronField);
-
-                                                                        // Activation function for each layer
-                                                                        const activationField = document.createElement('fieldset');
-                                                                        activationField.classList.add('message');
-                                                                        activationField.innerHTML = `
-                                                                    <label>Activation Function for Layer ${i + 1} *</label>
-                                                                    <select name="activation_function_${i}" required>
-                                                                        <option value="" selected>Select Activation Function</option>
-                                                                        <option value="relu">ReLU</option>
-                                                                        <option value="sigmoid">Sigmoid</option>
-                                                                        <option value="tanh">Tanh</option>
-                                                                        <!-- Other options... -->
-                                                                    </select>
-                                                                `;
-                                                                        container.appendChild(activationField);
-                                                                    }
-                                                                }
-                                                            });
-                                                        </script>
-                                                        <fieldset class="message">
-                                                            <label>Loss function *</label>
-                                                            <div class="">
-                                                                <div class="">
-                                                                    <select class="form-select"
-                                                                        aria-label="Loss Function Selector"
-                                                                        name="loss_function">
-                                                                        <option selected>Select Loss Function</option>
-                                                                        <option value="mean_squared_error">Mean Squared
-                                                                            Error (MSE)</option>
-                                                                        <option value="mean_absolute_error">Mean
-                                                                            Absolute Error (MAE)</option>
-                                                                        <option value="mean_absolute_percentage_error">
-                                                                            Mean Absolute Percentage Error (MAPE)
-                                                                        </option>
-                                                                        <option value="binary_crossentropy">Binary
-                                                                            Crossentropy</option>
-                                                                        <option value="categorical_crossentropy">
-                                                                            Categorical Crossentropy</option>
-                                                                        <option value="sparse_categorical_crossentropy">
-                                                                            Sparse Categorical Crossentropy</option>
-                                                                        <option value="hinge">Hinge</option>
-                                                                        <option value="squared_hinge">Squared Hinge
-                                                                        </option>
-                                                                        <option value="huber">Huber Loss</option>
-                                                                        <option value="log_cosh">Log-Cosh Loss</option>
-                                                                        <option value="poisson">Poisson</option>
-                                                                        <option value="kullback_leibler_divergence">
-                                                                            Kullback-Leibler Divergence (KL Divergence)
-                                                                        </option>
-                                                                    </select>
-                                                                </div>
-                                                            </div>
-                                                        </fieldset>
-
-                                                        <fieldset class="message">
-                                                            <label>Optimizer Function *</label>
-                                                            <div class="">
-                                                                <div class="">
-                                                                    <select class="form-select"
-                                                                        aria-label="Optimizer Function Selector"
-                                                                        name="optimizer_function">
-                                                                        <option selected>Select Optimizer Function
-                                                                        </option>
-                                                                        <option value="Adam">Adam</option>
-                                                                        <option value="SGD">SGD (Stochastic Gradient
-                                                                            Descent)</option>
-                                                                        <option value="RMSprop">RMSprop</option>
-                                                                        <option value="Adagrad">Adagrad</option>
-                                                                        <option value="Adadelta">Adadelta</option>
-                                                                        <option value="Adamax">Adamax</option>
-                                                                        <option value="Nadam">Nadam</option>
-                                                                        <option value="FTRL">FTRL (Follow The
-                                                                            Regularized Leader)</option>
-                                                                    </select>
-                                                                </div>
-                                                            </div>
-                                                        </fieldset>
-
-                                                        <fieldset class="name">
-                                                            <label>Epoches *</label>
-                                                            <input type="number" id="epoches"
-                                                                placeholder="nimber of epoches" name="epoches"
-                                                                tabindex="2" value="" aria-required="true" required="">
-                                                        </fieldset>
-
-
-                                                        <div class="btn-submit flex gap30 justify-center">
-                                                            <button class="tf-button style-1 h50 w320"
-                                                                type="submit">Submit item<i
-                                                                    class="icon-arrow-up-right2"></i></button>
-                                                        </div>
-
-                                                    </div>
-                                                </div>
-                                            </div>
-            
-                                        </div>
-                                    </div>
+                            <div class="wrap-content w-full">
+                                <div class="btn-submit flex gap30 justify-center">
+                                    <button class="tf-button style-1 h50 w320"
+                                        type="submit">Submit item<i
+                                            class="icon-arrow-up-right2"></i></button>
                                 </div>
                             </div>
                         </div>
