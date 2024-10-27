@@ -1,7 +1,6 @@
 from flask import Flask ,render_template,request
 import os
 from werkzeug.utils import secure_filename
-import boto3
 
 import numpy as np
 from sklearn.metrics import roc_curve, auc
@@ -151,6 +150,8 @@ def train_images_tensorsr(nbr_layers, nbr_neurals, activation, loss, optimizer, 
     test_loss, test_accuracy = model.evaluate(x_test, y_test)
     print(f'Test loss: {test_loss}, Test accuracy: {test_accuracy}')
 
+
+# dont forget to add file html to visualisze the loss function ...
     return model, history, test_loss, test_accuracy
 
 
@@ -205,20 +206,6 @@ def train_tensor(nbr_layers, nbr_neurals, activation, loss, optimizer, epoches, 
         model.compile(loss='categorical_crossentropy', optimizer=optimizer_func, metrics=['accuracy'])
     
     history = model.fit(X_train, y_train, epochs=epoches, batch_size=32, validation_split=0.2)
-    
-
-
-
-
-    plt.figure(figsize=(12, 6))
-    plt.subplot(1, 2, 1)
-    plt.plot(history.history['loss'], label='Loss')
-    plt.plot(history.history['val_loss'], label='Validation Loss')
-    plt.title('Model Loss over Epochs')
-    plt.xlabel('Epochs')
-    plt.ylabel('Loss')
-    plt.legend()
-    plt.grid()          
 
     # Save the trained model to an .h5 file
     model_path = 'static/models/my_model.h5'
@@ -246,17 +233,6 @@ def train_tensor(nbr_layers, nbr_neurals, activation, loss, optimizer, epoches, 
         plt.grid()
         plt.savefig('static/images/plots/model_accuracy.png')
 
-    # confusion matrix:
-
-    if task_type == 'classification':
-        y_pred_classes = model.predict(X_test)
-        y_pred_classes = np.argmax(y_pred_classes, axis=1)  # For multi-class
-        cm = confusion_matrix(y_test.values.argmax(axis=1), y_pred_classes)
-        disp = ConfusionMatrixDisplay(confusion_matrix=cm)
-        disp.plot()
-        plt.figure(figsize=(12, 6))
-        plt.title('Confusion Matrix')
-        plt.savefig('static/images/plots/confusion_matrix.png')
 
     test_loss = model.evaluate(X_test, y_test)
     
@@ -267,8 +243,6 @@ def train_tensor(nbr_layers, nbr_neurals, activation, loss, optimizer, epoches, 
     elif task_type == 'classification':
         accuracy = model.evaluate(X_test, y_test)[1]  # Get test accuracy
         return model, history, test_loss, accuracy
-
-
 
 # Specify the directory where uploaded files will be saved
 UPLOAD_FOLDER = 'static/uploads'
