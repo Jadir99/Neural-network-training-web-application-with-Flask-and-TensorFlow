@@ -1,26 +1,22 @@
-from flask import Flask ,render_template,request
+from flask import Flask, render_template, request
 import os
 from werkzeug.utils import secure_filename
 
 import numpy as np
-from sklearn.metrics import roc_curve, auc
-from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+import pandas as pd
+import matplotlib.pyplot as plt
+import cv2
+from PIL import Image
+
+from sklearn.metrics import roc_curve, auc, confusion_matrix, ConfusionMatrixDisplay, r2_score
+from sklearn.model_selection import train_test_split
 
 import tensorflow as tf
 from tensorflow.keras import layers, models
-from sklearn.model_selection import train_test_split
-import pandas as pd
-import matplotlib.pyplot as plt
-from sklearn.metrics import r2_score
 from tensorflow.keras.models import load_model
-import os
-import cv2
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-from sklearn.model_selection import train_test_split
-from keras import models, layers
 from keras.utils import to_categorical
+
+
 
 app=Flask(__name__)
 @app.route('/')
@@ -45,6 +41,15 @@ def classification_images():
 def predict():
     return render_template('predict.html')
 
+
+from tensorflow.keras.utils import plot_model
+# save the fig if summmuray :
+def save_model_summary_as_image(model):
+    try:
+        plot_model(model, to_file='./static/images/plots/model_summary.png', show_shapes=True)
+        print("Model summary saved as 'model_summary.png'.")
+    except Exception as e:
+        print(f"An error occurred: {e}")
 
 def train_images_tensorsr(nbr_layers, nbr_neurals, activation, loss, optimizer, epochs, target1, target2, alpha=0.001,img_size=(50, 50)):
 
@@ -118,7 +123,7 @@ def train_images_tensorsr(nbr_layers, nbr_neurals, activation, loss, optimizer, 
     # Train the model
     history = model.fit(x_train, y_train, epochs=epochs, validation_data=(x_test, y_test))
     # Plot and save model loss
-    plt.figure(figsize=(6, 6))
+    plt.figure(figsize=(12, 6))
     plt.plot(history.history['loss'], label='Loss')
     plt.plot(history.history['val_loss'], label='Validation Loss')
     plt.title('Model Loss over Epochs')
@@ -130,7 +135,7 @@ def train_images_tensorsr(nbr_layers, nbr_neurals, activation, loss, optimizer, 
     plt.close()  # Close the figure to free memory
 
     # Plot and save model accuracy
-    plt.figure(figsize=(6, 6))
+    plt.figure(figsize=(12, 6))
     plt.plot(history.history['accuracy'], label='Accuracy')
     plt.plot(history.history['val_accuracy'], label='Validation Accuracy')
     plt.title('Model Accuracy over Epochs')
@@ -141,7 +146,8 @@ def train_images_tensorsr(nbr_layers, nbr_neurals, activation, loss, optimizer, 
     plt.savefig('static/images/plots/model_accuracy.png')
     plt.close()
 
-
+# save the file 
+    save_model_summary_as_image(model)
     
     # Save the trained model to an .h5 file
     model_path = 'static/models/my_model.h5'
@@ -162,6 +168,8 @@ def choose_target(predict_class):
     if predict_class==0:
         return str(all.split(',')[0])
     return str(all.split(',')[1])
+
+
 
 # Prototype for training function with Pandas DataFrame
 def train_tensor(nbr_layers, nbr_neurals, activation, loss, optimizer, epoches, data, target_column, task_type, alpha=0.001):
@@ -232,8 +240,8 @@ def train_tensor(nbr_layers, nbr_neurals, activation, loss, optimizer, epoches, 
         plt.legend()
         plt.grid()
         plt.savefig('static/images/plots/model_accuracy.png')
-
-
+# save the file 
+    save_model_summary_as_image(model)
     test_loss = model.evaluate(X_test, y_test)
     
     if task_type == 'regression':
@@ -243,6 +251,8 @@ def train_tensor(nbr_layers, nbr_neurals, activation, loss, optimizer, epoches, 
     elif task_type == 'classification':
         accuracy = model.evaluate(X_test, y_test)[1]  # Get test accuracy
         return model, history, test_loss, accuracy
+    
+    
 
 # Specify the directory where uploaded files will be saved
 UPLOAD_FOLDER = 'static/uploads'
@@ -285,7 +295,7 @@ def train_data():
         # Render the result template with model details
         return render_template('result.html', summary=model.summary(), score=score, test_loss=test_loss,
                                activations=activations, neurons=neurons, epoches=epoches, 
-                               loss_function=loss_function, optimizer_function=optimizer_function, Target=Target)
+                               loss_function=loss_function, optimizer_function=optimizer_function, Target=Target,task_type=task_type)
 
 
 

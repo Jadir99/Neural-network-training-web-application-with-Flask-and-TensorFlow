@@ -11,7 +11,7 @@
     <!-- Basic Page Needs -->
     <meta charset="utf-8">
     <!--[if IE]><meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'><![endif]-->
-    <title>Open9 | NFT Marketplace HTML Template</title>
+    <title>DragoLearn by Jadir</title>
 
     <meta name="author" content="themesflat.com">
 
@@ -283,10 +283,41 @@
                             <div class="wrap-content w-full">
                                 <div class="btn-submit flex gap30 justify-center">
                                     <button class="tf-button style-1 h50 w320"
-                                        type="submit">Submit item<i
+                                        type="submit" onclick="spinner()" >Submit item<i
                                             class="icon-arrow-up-right2"></i></button>
                                 </div>
                             </div>
+                            
+                            <script>
+                                function spinner() {
+                                    // Create the main container
+                                    const preloadContainer = document.createElement('div');
+                                    preloadContainer.className = 'preload preload-container';
+                            
+                                    // Create the inner container
+                                    const middleDiv = document.createElement('div');
+                                    middleDiv.className = 'middle';
+                            
+                                    // Create the bars and add them to the inner container
+                                    for (let i = 1; i <= 8; i++) {
+                                        const barDiv = document.createElement('div');
+                                        barDiv.className = `bar bar${i}`;
+                                        middleDiv.appendChild(barDiv);
+                                    }
+                            
+                                    // Create and add the "please wait" message
+                                    const message = document.createElement('p');
+                                    message.className = 'spinner-message';
+                                    message.innerText = 'Please wait...';
+                                    preloadContainer.appendChild(message);
+                            
+                                    // Add the inner container to the main container
+                                    preloadContainer.appendChild(middleDiv);
+                            
+                                    // Add the main container to the body
+                                    document.body.appendChild(preloadContainer);
+                                }
+                            </script>
                         </div>
                     </div>
                 </div>
