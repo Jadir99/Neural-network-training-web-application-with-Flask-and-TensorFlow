@@ -1,3 +1,0 @@
-static/uploads/stats1.csv filter=lfs diff=lfs merge=lfs -text
-static/uploads/stats2.csv filter=lfs diff=lfs merge=lfs -text
-static/uploads/creditcard.csv filter=lfs diff=lfs merge=lfs -text
